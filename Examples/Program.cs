@@ -25,6 +25,13 @@ namespace Examples
 			lastLinePromise.Fail(error => Log(error.ToString()));
 			lastLinePromise.Success(lastLine => Log("last line of the requested web page:\n{0}", lastLine));
 
+			Func<int, int, string> slow = (x, y) => { System.Threading.Thread.Sleep(x); return "bla " + (x + y); };
+			Action<string> cb = (s) => { Log(s); };
+
+			var p = Promise.Wrap(slow, 40, 2);
+			p.Success(cb);
+
+
 			Console.ReadLine();
 		}
 

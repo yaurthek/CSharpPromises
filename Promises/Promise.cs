@@ -77,6 +77,57 @@ namespace Promises
 			};
 			return new Promise<IList<T>>(wrap);
 		}
+
+		public static Promise<T> Wrap<T>(Func<T> longRunning)
+		{
+			Action<Action<PromiseError, T>> wrap = (callback) =>
+			{
+				try
+				{
+					var result = longRunning();
+					callback(null, result);
+				}
+				catch (Exception ex)
+				{
+					callback(new PromiseError(ex), default(T));
+				}
+			};
+			return new Promise<T>(wrap);
+		}
+
+		public static Promise<T> Wrap<T, TArg1>(Func<TArg1, T> longRunning, TArg1 arg1)
+		{
+			Action<Action<PromiseError, T>> wrap = (callback) =>
+			{
+				try
+				{
+					var result = longRunning(arg1);
+					callback(null, result);
+				}
+				catch (Exception ex)
+				{
+					callback(new PromiseError(ex), default(T));
+				}
+			};
+			return new Promise<T>(wrap);
+		}
+
+		public static Promise<T> Wrap<T, TArg1, TArg2>(Func<TArg1, TArg2, T> longRunning, TArg1 arg1, TArg2 arg2)
+		{
+			Action<Action<PromiseError, T>> wrap = (callback) =>
+			{
+				try
+				{
+					var result = longRunning(arg1, arg2);
+					callback(null, result);
+				}
+				catch (Exception ex)
+				{
+					callback(new PromiseError(ex), default(T));
+				}
+			};
+			return new Promise<T>(wrap);
+		}
 	}
 
 	public class Promise<T> : Promise
